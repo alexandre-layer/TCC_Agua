@@ -1,13 +1,26 @@
+# This Python file uses the following encoding: utf-8
 # Programa em Python criado para ser um cliente MQTT no broker
 # ele assina o tópico esp/vazao e ao receber mensagens salva no arquivo registro.txt
 # - 13/09/2019 	- Versão inicial
-#				- Comentários
+#               - Comentários
+#               - Cria o arquivo caso nao exista (registro.txt)
+#
+#
+
 
 import paho.mqtt.client as mqtt # importa biblioteca Paho (Paho é uma biblioteca de MQTT para Python)
 
-arquivo = open('registro.txt', 'r') # Abre o arquivo registro.txt em modo leitura
+
+try:    #Verifica se o arquivo existe, senão cria um novo
+    arquivo = open('registro.txt', 'r')
+except FileNotFoundError:
+    arquivo = open('registro.txt', 'w')
+    arquivo.close()
+    arquivo = open('registro.txt', 'r')
+
+# Aqui já estamos com o arquivo registro.txt em modo leitura
 conteudo = arquivo.readlines() # Lê o arquivo e salva o conteudo na variável 'conteudo'
-arquivo.close()
+arquivo.close() # Fecha o arquivo
 
 
 # Chamada para quando o cliente recebe a resposta CONNACK do servidor (indica que o cliente está conectado)
