@@ -1,4 +1,3 @@
-// definir porta de leitura do sensor de Vazao
 // Versão inicial = 29/08/2019
 //
 // 29/08/2019 - Le vazão e envia via serial e MQTT
@@ -6,7 +5,7 @@
 //            - Comentei as partes de mensagens via serial (mantive para usar em caso de 'debug' futuramente)
 //            - Alterei o servidor NTP (estou usando o instalei um NTP no raspberry / broker)
 //            - O led Azul embutido do ESP32 faz uma sinalização de mensagem transmitida
-//
+// 28/01/2020 - Limpeza do código, alteração de variaveis e inclusão de constantes para configuração
 // Importação de bibliotecas
 #include <NTPClient.h>    // Biblioteca do NTP.
 #include <PubSubClient.h> // Biblioteca MQTT
@@ -21,25 +20,27 @@ const char* mqttServer = "192.168.64.100";    // IP / Hostname do Broker
 const int mqttPort = 1883;                    // porta
 const char* mqttUser = "agua";                // Usuário
 const char* mqttPassword = "1368";            // Senha
+const char* idMedidor = "medidor/esp32a";             // Id do medidor - a ser enviada no tópico
+
+//Parâmetro NTP
+const char* ntpServer = "192.168.64.100";
 
 // Instâncias Principais
 WiFiClient espClient;                                   // Wifi (principal usada pelo MQTT
 PubSubClient client(espClient);                         // MQTT
 WiFiUDP udp;                                            // UDP - Usada pelo NTP
-NTPClient ntp(udp, "192.168.64.100", -3 * 3600, 60000);   // Cria um objeto "NTP" com as configurações. 
+NTPClient ntp(udp, ntpServer, -3 * 3600, 60000);   // Cria um objeto "NTP" com as configurações. 
 
 // Variáveis 
 String hora;                           // Váriavel para armazenar o horario do NTP.
 String buffer;                         // Variável para concatenar String que vai ser enviada no payload do MQTT.                         
-volatile int pulsos_vazao = 0;         // Variável que armazena o número de pulsos contados no período de medição.
-const int portaSensor = GPIO_NUM_35;   // Define o pino (GPIO) que vai ser usado para receber os pulsos de vazão.
 float vazao = 0;                       // Vazão traduzida (de pulso para Litros, m3, etc) a ser enviada na mensagem.
-int LED_BUILTIN = 2;                   // Pino do LED azul embutido na placa do ESP (sinaliza msg enviada)
-int periodo = 5000;                    // Variável do tempo entre leituras (periodo)
+volatile int pulsos_vazao = 0;         // Variável que armazena o número de pulsos contados no período de medição.
+int periodo = 5000;                    // Variável do tempo entre leituras (periodo) em milisegundos
 
-static void atualizaVazao();
-
-
+// Parâmetros de hardware
+const int portaSensor = GPIO_NUM_35;   // Define o pino (GPIO) que vai ser usado para receber os pulsos de vazão.
+const int LED_ENVIO = 2;                   // Pino do LED azul embutido na placa do ESP (sinaliza msg enviada)
 
 void IRAM_ATTR gpio_isr_handler_up(void* arg) // Função da interrupção. Esssa função interrompe o programa principal a cada vez que o sensor da um pulso.
 {
@@ -60,7 +61,7 @@ void setup() {
 
   // inicializar serial (serial não esta sendo mais usada nesse código mas vou manter comentada para caso de 'debug')
   // Serial.begin(115200);
-  pinMode(LED_BUILTIN, OUTPUT);                   // Seta o pino do LED como output
+  pinMode(LED_ENVIO, OUTPUT);                   // Seta o pino do LED como output
   WiFi.begin(ssid, password);                     // Inicializa Wifi
  
   while (WiFi.status() != WL_CONNECTED) {
@@ -103,10 +104,10 @@ void loop() {
   
   hora = ntp.getFormattedTime();                          // Receber e Armazena na váriavel HORA, o horario atual.
   buffer = hora + "=" + String(vazao);                    // Concatena hora e vazão na variável buffer 
-  client.publish("esp/vazao", (char*) buffer.c_str());    // Publica  o conteúdo de buffer (Obs: a biblioteca recebe em char)
-  digitalWrite(LED_BUILTIN, HIGH);
+  client.publish(idMedidor, (char*) buffer.c_str());    // Publica  o conteúdo de buffer (Obs: a biblioteca recebe em char)
+  digitalWrite(LED_ENVIO, HIGH);
   delay(200);
-  digitalWrite(LED_BUILTIN, LOW);
+  digitalWrite(LED_ENVIO, LOW);
   delay(periodo - 200);   // delay (enquanto isso o sensor está armazenando os pulsos a serem enviados no próximo loop)
   client.loop(); // Verificar se isso ainda é necessário
  
