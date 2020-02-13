@@ -11,3 +11,5 @@ Versão inicial = 29/08/2019
 
 28/01/2020 - Limpeza do código, alteração de variaveis e inclusão de constantes para configuração (NTP, topico, Led, etc)
 
+13/02/2020 - Mudança do ID do cliente para evitar conflito entre os varios medidores
+           - Mudança do nome da variável de tópico
