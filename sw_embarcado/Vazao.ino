@@ -6,6 +6,8 @@
 //            - Alterei o servidor NTP (estou usando o instalei um NTP no raspberry / broker)
 //            - O led Azul embutido do ESP32 faz uma sinalização de mensagem transmitida
 // 28/01/2020 - Limpeza do código, alteração de variaveis e inclusão de constantes para configuração
+// 13/02/2020 - Mudança do ID do cliente para evitar conflito entre os varios medidores
+//            - Mudança do nome da variável de tópico
 // Importação de bibliotecas
 #include <NTPClient.h>    // Biblioteca do NTP.
 #include <PubSubClient.h> // Biblioteca MQTT
@@ -20,7 +22,8 @@ const char* mqttServer = "192.168.64.100";    // IP / Hostname do Broker
 const int mqttPort = 1883;                    // porta
 const char* mqttUser = "agua";                // Usuário
 const char* mqttPassword = "1368";            // Senha
-const char* idMedidor = "medidor/esp32a";             // Id do medidor - a ser enviada no tópico
+const char* idMedidor = "Medidor02";          // Id do medidor
+const char* topicoMedidor = "medidor/esp32b"; // topico do medidor
 
 //Parâmetro NTP
 const char* ntpServer = "192.168.64.100";
@@ -77,7 +80,7 @@ void setup() {
   while (!client.connected()) {
     
     // Serial.println("Connecting to MQTT...");
-    if (client.connect("ESP32Client", mqttUser, mqttPassword )) { // conecta  MQTT
+    if (client.connect(idMedidor, mqttUser, mqttPassword )) { // conecta  MQTT
  
       // Serial.println("connected");
  
@@ -104,7 +107,7 @@ void loop() {
   
   hora = ntp.getFormattedTime();                          // Receber e Armazena na váriavel HORA, o horario atual.
   buffer = hora + "=" + String(vazao);                    // Concatena hora e vazão na variável buffer 
-  client.publish(idMedidor, (char*) buffer.c_str());    // Publica  o conteúdo de buffer (Obs: a biblioteca recebe em char)
+  client.publish(topicoMedidor, (char*) buffer.c_str());    // Publica  o conteúdo de buffer (Obs: a biblioteca recebe em char)
   digitalWrite(LED_ENVIO, HIGH);
   delay(200);
   digitalWrite(LED_ENVIO, LOW);
