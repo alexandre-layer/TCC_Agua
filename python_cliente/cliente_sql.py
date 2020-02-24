@@ -9,7 +9,7 @@
 # - 17/11/2019  - mudança para armazenamento das mensagens em banco de dados (MySQL)
 # - 20/02/2020 - Mudanças nos bancos
 #
-#
+# - 24/02/2020 - Mudança no nome do topico mqtt e na senha do bd#
 #
 import MySQLdb as mdb		# importa Mysql
 import paho.mqtt.client as mqtt # importa biblioteca Paho (Paho é uma biblioteca de MQTT para Python)
@@ -17,14 +17,14 @@ servbroker = "localhost"
 servdb = "localhost"
 
 #chamada para conectar ao banco
-con = mdb.connect(servdb, 'aguasql', 'password', 'simcona')
+con = mdb.connect(servdb, 'aguasql', 'pass1368', 'simcona')
 cur = con.cursor()
 
 # Chamada (função) para quando o cliente recebe a resposta CONNACK do servidor (indica que o cliente está conectado)
 def on_connect(client, userdata, flags, rc):
     print("Conectado. Código: "+str(rc))
     # Subscrevendo dentro do on_connect() significa que se perdermos a conexão todas as subinscrições serão renovadas.
-    client.subscribe("medidores/#")
+    client.subscribe("medidor/#")
 
 # Chamada (função) para quando uma mensagem PUBLISH é recebida do servidor (broker).
 def on_message(client, userdata, msg):
