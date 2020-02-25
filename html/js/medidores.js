@@ -15,7 +15,7 @@ var gauges  = []
 				gaugeRadius : 100,
                 minVal : 0,
                 maxVal : 100,
-                needleVal : Math.round(70),
+                needleVal : Math.round(60),
                 tickSpaceMinVal : 1,
                 tickSpaceMajVal : 10, 
                 divID : "gaugeBox2", 
@@ -45,4 +45,13 @@ var gauges  = []
 			}
 			gauges[3] = new drawGauge(opt);
 			
+			setInterval(function()
+				{ 
+				var i;
+				for (i = 0; i < 4; i++) 
+					{ 
+					gauges[i].updateGauge(Math.floor(Math.random() * 101));
+					}
+				}, 3000);
 		})
+		
