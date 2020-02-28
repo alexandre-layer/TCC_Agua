@@ -18,7 +18,6 @@ function buscaRegistros($topico)
 function retornaRegistros($medidores)
 	{
 	$registros = array();
-	//$medidores = buscaMedidores();
 	$tamanho = count($medidores);
 	foreach ($medidores as $atual)
 		{
@@ -37,5 +36,3 @@ for ($x=0;$x < (count($medidores));$x++)
 	}
 echo $medidoresJSON;
 ?>
-</body>
-</html>

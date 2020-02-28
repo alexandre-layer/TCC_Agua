@@ -1,3 +1,12 @@
+var xmlhttp = new XMLHttpRequest();
+var valores = [];
+xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    myObj = JSON.parse(this.responseText);
+    valores = myObj.valor;
+  }
+};
+
 var gauges  = []
 		document.addEventListener("DOMContentLoaded", function(event) {
 			var opt = {
@@ -47,10 +56,17 @@ var gauges  = []
 			
 			setInterval(function()
 				{ 
+					$.getJSON("atualmedidoresjson.php", function(result){
+					$.each(result, function(i, field){
+					xmlhttp.open("GET", "atualmedidoresjson.php", true);
+					xmlhttp.send();
+					//window.alert(valores);
+						});
+					});
 				var i;
 				for (i = 0; i < 4; i++) 
 					{ 
-					gauges[i].updateGauge(Math.floor(Math.random() * 101));
+					gauges[i].updateGauge(valores[i]);
 					}
 				}, 3000);
 		})
