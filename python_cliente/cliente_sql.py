@@ -29,8 +29,8 @@ def on_connect(client, userdata, flags, rc):
 # Chamada (função) para quando uma mensagem PUBLISH é recebida do servidor (broker).
 def on_message(client, userdata, msg):
     print(msg.topic+" = > "+str(msg.payload))           # Imprime na tela (console a mensagem)
-    conteudo = (msg.topic+"|"+str(msg.payload)+"\n")    # Recebe o tópico e a mensagem, concatenando em 'conteudo' 
-    cur.execute("INSERT INTO Registro(horario,topicoMedidor, valor) VALUES(now(),'"+msg.topic+"',"+str(msg.payload)+")") # prepara insert
+    valor = str(msg.payload)			    # Recebe o tópico e a mensagem, concatenando em 'conteudo' 
+    cur.execute("INSERT INTO Registro(horario,topicoMedidor, valor) VALUES(now(),'"+msg.topic+"',"+valor.split("=")[1]+")") # prepara insert
     con.commit() #commit da operação do insert
 
 client = mqtt.Client(client_id="PythonCliAgua", clean_session=False) # Instancia o cliente MQTT
