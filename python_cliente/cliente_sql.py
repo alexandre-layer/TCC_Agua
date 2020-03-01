@@ -10,11 +10,17 @@
 # - 20/02/2020 - Mudanças nos bancos
 #
 # - 24/02/2020 - Mudança no nome do topico mqtt e na senha do bd#
+# - 29/02/2020 - mudança na forma de inserir (mudança na estrutura do banco (PK Medidor))
 #
+#
+
 import MySQLdb as mdb		# importa Mysql
 import paho.mqtt.client as mqtt # importa biblioteca Paho (Paho é uma biblioteca de MQTT para Python)
 servbroker = "localhost"
+usuariobroker ="agua"
+senhabroker = "1368"
 servdb = "localhost"
+topico = "medidor/#"
 
 #chamada para conectar ao banco
 con = mdb.connect(servdb, 'aguasql', 'pass1368', 'simcona')
@@ -24,17 +30,17 @@ cur = con.cursor()
 def on_connect(client, userdata, flags, rc):
     print("Conectado. Código: "+str(rc))
     # Subscrevendo dentro do on_connect() significa que se perdermos a conexão todas as subinscrições serão renovadas.
-    client.subscribe("medidor/#")
+    client.subscribe(topico)
 
 # Chamada (função) para quando uma mensagem PUBLISH é recebida do servidor (broker).
 def on_message(client, userdata, msg):
     print(msg.topic+" = > "+str(msg.payload))           # Imprime na tela (console a mensagem)
     valor = str(msg.payload)			    # Recebe o tópico e a mensagem, concatenando em 'conteudo' 
-    cur.execute("INSERT INTO Registro(horario,topicoMedidor, valor) VALUES(now(),'"+msg.topic+"',"+valor.split("=")[1]+")") # prepara insert
+    cur.execute("INSERT INTO Registro(horario, valor, idMedidor) SELECT NOW(),"+valor.split("=")[1]+", id FROM Medidor WHERE topico = '"+msg.topic+"'") # prepara insert
     con.commit() #commit da operação do insert
 
 client = mqtt.Client(client_id="PythonCliAgua", clean_session=False) # Instancia o cliente MQTT
-client.username_pw_set("agua", password="1368") # Parâmetros de conexao (usuário e senha)
+client.username_pw_set(usuariobroker, password=senhabroker) # Parâmetros de conexao (usuário e senha)
 client.on_connect = on_connect # aponta as função a ser chamada quando o evento 'on_connect' ocorrer
 client.on_message = on_message # aponta as função a ser chamada quando o evento 'on_message' ocorrer
 
