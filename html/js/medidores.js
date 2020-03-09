@@ -1,19 +1,35 @@
-var xmlhttp = new XMLHttpRequest();
-var valores = [];
-xmlhttp.onreadystatechange = function() {
-  if (this.readyState == 4 && this.status == 200) {
-    myObj = JSON.parse(this.responseText);
-    valores = myObj.valor;
-  }
-};
+function retornaUltimaLeitura(medidor, ponteiro) {
+	$.post("cntrl/registro.php",
+		{
+		parametro1:medidor,
+		funcao:"ultimaLeitura",
+		})
+	.done(function(data,status)
+		{
+		resposta = JSON.parse(data)
+		gauges[ponteiro].updateGauge(resposta.valor)
+		})
+	return resposta.valor;
+}
 
+$(document).ready(function(){
+$.post("cntrl/medidor.php",
+    {
+       funcao:"listaMedidores",
+    },
+    function(data,status){
+      resposta = JSON.parse(data)
+	  medidoresId = resposta.id;
+	});
+});
+	
 var gauges  = []
 		document.addEventListener("DOMContentLoaded", function(event) {
 			var opt = {
 				gaugeRadius : 100,
                 minVal : 0,
                 maxVal : 100,
-                needleVal : Math.round(30),
+                needleVal : Math.round(0),
                 tickSpaceMinVal : 1,
                 tickSpaceMajVal : 10, 
                 divID : "gaugeBox1", 
@@ -24,7 +40,7 @@ var gauges  = []
 				gaugeRadius : 100,
                 minVal : 0,
                 maxVal : 100,
-                needleVal : Math.round(60),
+                needleVal : Math.round(0),
                 tickSpaceMinVal : 1,
                 tickSpaceMajVal : 10, 
                 divID : "gaugeBox2", 
@@ -35,7 +51,7 @@ var gauges  = []
 				gaugeRadius : 100,
                 minVal : 0,
                 maxVal : 100,
-                needleVal : Math.round(20),
+                needleVal : Math.round(0),
                 tickSpaceMinVal : 1,
                 tickSpaceMajVal : 10, 
                 divID : "gaugeBox3", 
@@ -46,7 +62,7 @@ var gauges  = []
 				gaugeRadius : 100,
                 minVal : 0,
                 maxVal : 100,
-                needleVal : Math.round(40),
+                needleVal : Math.round(0),
                 tickSpaceMinVal : 1,
                 tickSpaceMajVal : 10, 
                 divID : "gaugeBox4", 
@@ -56,18 +72,11 @@ var gauges  = []
 			
 			setInterval(function()
 				{ 
-					$.getJSON("atualmedidoresjson.php", function(result){
-					$.each(result, function(i, field){
-					xmlhttp.open("GET", "atualmedidoresjson.php", true);
-					xmlhttp.send();
-					//window.alert(valores);
-						});
-					});
-				var i;
-				for (i = 0; i < 4; i++) 
+				for (i = 0; i < ((medidoresId).length); i++) 
 					{ 
-					gauges[i].updateGauge(valores[i]);
+					retornaUltimaLeitura(medidoresId[i], i);
 					}
-				}, 3000);
+					
+			}, 3000);
 		})
 		

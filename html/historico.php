@@ -13,6 +13,7 @@
 <body>
 <?php
 	require_once('supnavbar.html');
+
 ?>
 <center>
 	<div class="corpo">
