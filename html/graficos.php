@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-<?php
-			$medidorAtual =0;
-			?>
 	<meta charset="UTF-8" />
 	<title>SIMCONA</title>
 	<link rel="stylesheet" type="text/css" href="reset.css">
@@ -38,12 +35,11 @@
 					
 					for ($i=0; $i < (count($todosMedidores)); $i++) {
 					?>
-					<a href="./graficos.php?medidor=<?php echo $todosMedidores[$i]['id'] ?>">
+					<a href="graficos.php?medidor=<?php echo $todosMedidores[$i]['id'] ?>">
 					<?php echo $todosMedidores[$i]['nome'];?>
 					</a><br><?php
 					}?>	
 				</div>
-					
 					<div id="grafico01" class="grafico">Gráfico - <?php echo $todosMedidores[$medidorAtual - 1]['nome'] ?>
 						<br>
 						<canvas id="line-chart1" ></canvas>
@@ -51,7 +47,7 @@
 					</div>
 					<br>
 					
-					<div id="grafico01" class="grafico">Gráfico - <?php echo $todosMedidores[$medidorAtual - 1]['nome'] ?>
+					<div id="grafico02" class="grafico">Gráfico - <?php echo $todosMedidores[$medidorAtual - 1]['nome'] ?>
 						
 						<br>
 						<canvas id="line-chart2" ></canvas>
@@ -61,7 +57,7 @@
 		</center>
 	</div>
 <center>	
-<script src="js/Chart.medidor.js"></script>	
+<script src="js/chart.medidor.graficos.js"></script>	
 </body>
 
 </html>
