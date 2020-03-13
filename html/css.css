@@ -4,7 +4,7 @@ font-family:helvetica;
 div.supbar {
 	width: 100%;
 	height: 68px;
-	border: 1px solid #730021;
+	border: 0px solid #730021;
 	background-color:#E0E0F0;
 }
 div.logo {
@@ -21,7 +21,7 @@ div.menu {
 	height: 40px;
 	width: 70%;
 	margin: auto;
-	border: 1px solid #73AD21;
+	border: 0px solid #73AD21;
 	padding-top:20px;
 }
 div.medidores {
@@ -42,7 +42,7 @@ div.config {
 	background-color: #f0f0f0;
 }
 div.grafico {
-	border: 1px solid #ffaa00;
+	border: 1px solid #000000;
 	height: 320px;
 	width: 600px;
 	float: right;
@@ -52,7 +52,7 @@ div.grafico {
 	background-color: #f0f0f0;
 }
 div.graficontrol {
-	border: 1px solid #ee3300;
+	border: 1px solid #000000;
 	height: 100px;
 	width: 600px;
 	float: right;
@@ -78,7 +78,7 @@ div.alertas {
 }
 div.grafesquerda {
 	font-size:22px;
-	border: 1px solid #6faabb;
+	border: 0px solid #6faabb;
 	height: 320px;
 	width: 200px;
 	float:left;
@@ -87,7 +87,7 @@ div.grafesquerda {
 }
 div.menuesquerda {
 	font-size:22px;
-	border: 1px solid #ffaa00;
+	border: 0px solid #ffaa00;
 	height: 500px;
 	width: 130px;
 	float: left;

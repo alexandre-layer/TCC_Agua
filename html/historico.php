@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,7 +36,6 @@
 			horarioInicial = <?php echo json_encode($datainicial); ?>;
 			horarioFinal = <?php echo json_encode($datafinal); ?>;
 			</script>
-				
 				<div class="menuesquerda"><br><br> 
 					<?php
 					
@@ -50,8 +48,7 @@
 				</div>
 		<center>
 			<div id="grafico01" class="grafico">Gráfico - <?php echo $todosMedidores[$medidorAtual - 1]['nome'] ?>
-						<br>
-						<canvas id="line-chart1" ></canvas>
+				<br><canvas id="line-chart1" ></canvas>
 			</div>
 			<div class="graficontrol">
 				Exibição<br>
@@ -60,14 +57,12 @@
 				<input type="time" name="horaini">&nbsp Até &nbsp 
 				<input type="date" name="datafim">
 				<input type="time" name="horafim">
-				
-				<input type="submit" name="submit" value="Submit">  
+				<input type="submit" name="submit" value="Exibir">  
 				<br><br>
 				<button type="submit" name="admarc" value="admarc">Adicionar marcação...</button>
 				<button type="submit" name="amarc" value="marc">Exibir marcações</button>
 				</form>
 			</div>
-			
 		</center>
 	</div>
 <script src="js/chart.medidor.historico.js"></script>	

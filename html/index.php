@@ -9,7 +9,6 @@
 	<script type="text/javascript" src="js/d3.v4.min.js" charset="utf-8"></script>	
 	<script src="js/d3gauge.js"></script>
 	<script type="text/javascript" src="js/medidores.js"></script>
-	
 </head>
 <body>
 <?php
@@ -35,10 +34,5 @@
 		</center>
 	</div>
 <center>	
-<script>
-
-
-</script>
-
 </body>
 </html>

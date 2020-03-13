@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,7 +7,6 @@
 	<link rel="stylesheet" type="text/css" href="css.css">
 	<script src="js/jquery-3.4.1.min.js"></script>
 	<script src="js/Chart.js"></script>
-	
 </head>
 <body>
 <?php
@@ -16,9 +14,6 @@
 ?>
 <center>
 	<div class="corpo">
-		<div class="menuesquerda">
-		
-		</div>
 		<center>
 			<div class="config">
 				Configurações do broker<br><br><br>
@@ -38,9 +33,6 @@
 				</table>
 				<br><br>
 				<button >Salvar</button>
-				
-				
-				
 			</div>
 		</center>
 	</div>

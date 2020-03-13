@@ -12,11 +12,10 @@
 <body>
 <?php
 	require_once('supnavbar.html');
-	require_once('cntrl/medidorfcn.php')
+	require_once('cntrl/medidorfcn.php');
 ?>
 <center>
 	<div class="corpo">
-			
 		<center>
 			<?php
 			$todosMedidores = buscaMedidores();
@@ -29,7 +28,6 @@
 			<script>
 			idDoMedidor = <?php echo $medidorAtual; ?>
 			</script>
-				
 				<div class="menuesquerda"><br><br> 
 					<?php
 					
@@ -52,8 +50,7 @@
 						<br>
 						<canvas id="line-chart2" ></canvas>
 					</div>
-					<br><?php
-			?>
+					<br>
 		</center>
 	</div>
 <center>	
