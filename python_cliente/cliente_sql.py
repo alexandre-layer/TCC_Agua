@@ -16,15 +16,19 @@
 
 import MySQLdb as mdb		# importa Mysql
 import paho.mqtt.client as mqtt # importa biblioteca Paho (Paho é uma biblioteca de MQTT para Python)
-servbroker = "localhost"
-usuariobroker ="agua"
-senhabroker = "1368"
 servdb = "localhost"
 topico = "medidor/#"
 
 #chamada para conectar ao banco
 con = mdb.connect(servdb, 'aguasql', 'pass1368', 'simcona')
 cur = con.cursor()
+
+#Obter configurações do broker a partir do banco
+cur.execute("SELECT usuarioBroker,senhaBroker, enderecoBroker FROM Configuracao WHERE id=0")
+configuracao = cur.fetchone()
+usuariobroker = configuracao[0]
+senhabroker = configuracao[1]
+servbroker = configuracao[2]
 
 # Chamada (função) para quando o cliente recebe a resposta CONNACK do servidor (indica que o cliente está conectado)
 def on_connect(client, userdata, flags, rc):
