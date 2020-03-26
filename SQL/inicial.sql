@@ -1,4 +1,4 @@
--- Atualizado em 12/03/2020
+-- Atualizado em 24/03/2020
 
 CREATE DATABASE simcona;
 USE simcona;
@@ -40,6 +40,7 @@ senha VARCHAR(128)
 );
 
 CREATE TABLE Configuracao (
+id INT NOT NULL PRIMARY KEY ,
 usuarioBroker VARCHAR(128),
 senhaBroker VARCHAR(128),
 enderecoBroker VARCHAR(255)
@@ -58,6 +59,7 @@ INSERT INTO Medidor (nome,topico,descricao,fator) VALUES ("Medidor02", "medidor/
 INSERT INTO Medidor (nome,topico,descricao,fator) VALUES ("Medidor03", "medidor/esp32c", "Predio 03", 1.0);
 INSERT INTO Medidor (nome,topico,descricao,fator) VALUES ("Medidor04", "medidor/esp32d", "Predio 04", 1.0);
 INSERT INTO Usuario (login, senha) VALUES ("user", "password");
+INSERT INTO Configuracao (id, usuarioBroker,senhaBroker, enderecoBroker) values (0, "agua", "1368","127.0.0.1");
  
 CREATE USER 'aguasql'@'localhost' IDENTIFIED BY 'pass1368';
 GRANT SELECT,INSERT,DELETE,UPDATE on simcona.Medidor TO 'aguasql'@'localhost';
