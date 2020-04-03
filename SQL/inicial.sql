@@ -1,14 +1,7 @@
--- Atualizado em 24/03/2020
+-- Atualizado em 02/04/2020
 
 CREATE DATABASE simcona;
 USE simcona;
-
-CREATE TABLE Registro (
-id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-horario DATETIME(0),
-valor DECIMAL(10,3 ),
-idMedidor INT(128)
-);
 
 CREATE TABLE Medidor (
 id INT AUTO_INCREMENT PRIMARY KEY ,
@@ -18,19 +11,27 @@ descricao VARCHAR(512),
 fator DECIMAL(4,3)
 );
 
-ALTER TABLE Registro ADD FOREIGN KEY(idMedidor) REFERENCES Medidor (id);
+CREATE TABLE Registro (
+id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+horario DATETIME(0),
+valor DECIMAL(10,3 ),
+idMedidor INT(128),
+FOREIGN KEY(idMedidor) REFERENCES Medidor (id)
+);
 
 CREATE TABLE TipoAnotacao (
 idTipo INT PRIMARY KEY,
-Nome VARCHAR(255)
+nome VARCHAR(255)
 );
 
 CREATE TABLE Anotacao (
-idAnotacao BIGINT PRIMARY KEY,
+idAnotacao BIGINT AUTO_INCREMENT PRIMARY KEY,
 horaInicio DATETIME,
 horaFim DATETIME,
 tipoAnotacao INT,
-FOREIGN KEY(tipoAnotacao) REFERENCES TipoAnotacao (idTipo)
+idMedidor INT(128),
+FOREIGN KEY(tipoAnotacao) REFERENCES TipoAnotacao (idTipo),
+FOREIGN KEY(idMedidor) REFERENCES Medidor (id)
 );
 
 CREATE TABLE Usuario (
@@ -49,7 +50,7 @@ enderecoBroker VARCHAR(255)
 CREATE TABLE Alerta (
 idAlerta BIGINT PRIMARY KEY,
 textoDescricao VARCHAR(255),
-Horario DATETIME,
+horario DATETIME,
 idAnotacao BIGINT,
 FOREIGN KEY(idAnotacao) REFERENCES Anotacao (idAnotacao)
 );
@@ -59,7 +60,10 @@ INSERT INTO Medidor (nome,topico,descricao,fator) VALUES ("Medidor02", "medidor/
 INSERT INTO Medidor (nome,topico,descricao,fator) VALUES ("Medidor03", "medidor/esp32c", "Predio 03", 1.0);
 INSERT INTO Medidor (nome,topico,descricao,fator) VALUES ("Medidor04", "medidor/esp32d", "Predio 04", 1.0);
 INSERT INTO Usuario (login, senha) VALUES ("user", "password");
-INSERT INTO Configuracao (id, usuarioBroker,senhaBroker, enderecoBroker) values (0, "agua", "1368","127.0.0.1");
+INSERT INTO Configuracao (id, usuarioBroker,senhaBroker, enderecoBroker) VALUES (0, "agua", "1368","127.0.0.1");
+INSERT INTO TipoAnotacao (idTipo, nome) VALUES (0, "Vazamento");
+INSERT INTO TipoAnotacao (idTipo, nome) VALUES (1, "Baixo Consumo");
+ 
  
 CREATE USER 'aguasql'@'localhost' IDENTIFIED BY 'pass1368';
 GRANT SELECT,INSERT,DELETE,UPDATE on simcona.Medidor TO 'aguasql'@'localhost';
