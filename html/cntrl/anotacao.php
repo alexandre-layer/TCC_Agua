@@ -29,5 +29,11 @@ function insereAnotacao($hinicio,$hfim, $idTipoAnotacao, $idMedidor)
 	$statement = $pdo->prepare("INSERT INTO Anotacao (horaInicio, horaFim, tipoAnotacao, idMedidor) VALUES ('".$hinicio."' , '".$hfim."', ".$idTipoAnotacao.", ".$idMedidor.")");
 	$statement->execute();            
 	}
+function excluiAnotacao($id)
+	{
+	$pdo = Banco::obterConexao();
+	$statement = $pdo->prepare("DELETE FROM Anotacao WHERE idAnotacao =".$id);
+	$statement->execute();            
+	}
 
 ?>

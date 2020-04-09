@@ -33,7 +33,6 @@
 			</script>
 				<div class="menuesquerda"><br><br> 
 					<?php
-					
 					for ($i=0; $i < (count($todosMedidores)); $i++) {
 					?>
 					<a href="exibeanotacoes.php?medidor=<?php echo $todosMedidores[$i]['id']; ?>">
@@ -45,10 +44,10 @@
 			<div class="anotacoes"><?php echo $todosMedidores[$medidorAtual - 1]['nome']; ?>
 				<table class="anotacoes">
 					<tr >
-						<th class="anotacao">ID</td>
 						<th class="anotacao">Inicio</td>
 						<th class="anotacao">Fim</td>
 						<th class="anotacao">Tipo</td>
+						<th class="anotacao">Ação</td>
 					</tr>
 				<?php
 				$anotacoes = retornaAnotacoes($paginaatual, $medidorAtual);
@@ -56,10 +55,15 @@
 					{
 					?>
 					<tr>
-						<td><?php echo $anotacao['idAnotacao']; ?></td>
-						<td class="horario"><?php echo $anotacao['horaInicio']; ?></td>
-						<td class="horario"><?php echo $anotacao['horaFim']; ?></td>
-						<td class="tipoanotacao"><?php echo $tiposdeanotacao[($anotacao['tipoAnotacao'])]['nome']; ?></td>
+						<form method="post" action="graficoanotacao.php?medidor=<?php echo $medidorAtual ?>">
+							<td class="horario"><?php echo $anotacao['horaInicio']; ?></td>
+							<td class="horario"><?php echo $anotacao['horaFim']; ?></td>
+							<td class="tipoanotacao"><?php echo $tiposdeanotacao[($anotacao['tipoAnotacao'])]['nome']; ?></td>
+							<td class="acao"><button type="submit" name="exibir" value="<?php echo $anotacao['idAnotacao']; ?>">Exibir</button>
+							<input type="hidden" name="pagina" value="<?php echo $paginaatual ?>">
+							<button type="submit" name="excluir" value="<?php echo $anotacao['idAnotacao']; ?>">Excluir</button>
+							</td>
+						</form>
 					</tr>
 					<?php
 					}
@@ -74,9 +78,7 @@
 				?>
 				</center>
 			</div>
-			
 		</center>
 	</div>
 </body>
-
 </html>

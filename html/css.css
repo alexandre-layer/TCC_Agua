@@ -127,6 +127,10 @@ td.horario {
 	width: 200px;
 	text-align:center;
 }
+td.acao {
+	width: 120px;
+	text-align:center;
+}
 th.anotacao {
 	background-color:gray;
 }
