@@ -11,14 +11,14 @@ function retornaTiposAnotacao()
 function retornaAnotacao($id)
 	{
 	$pdo = Banco::obterConexao();
-	$statement = $pdo->prepare("SELECT idAnotacao, horaInicio, horaFim, tipoAnotacao FROM Anotacao WHERE idAnotacao = ".$id);
+	$statement = $pdo->prepare("SELECT id, horaInicio, horaFim, tipoAnotacao FROM Anotacao WHERE id = ".$id);
 	$statement->execute();            
 	return($statement->fetchAll()[0]);   
 	}
 function retornaAnotacoes($pagina, $medidorAnotacao)
 	{
 	$pdo = Banco::obterConexao();
-	$statement = $pdo->prepare("SELECT idAnotacao, horaInicio, horaFim, tipoAnotacao FROM Anotacao WHERE idMedidor = ".$medidorAnotacao." ORDER BY idAnotacao ASC LIMIT ".(($pagina-1)*15).", 15");
+	$statement = $pdo->prepare("SELECT id, horaInicio, horaFim, tipoAnotacao FROM Anotacao WHERE idMedidor = ".$medidorAnotacao." ORDER BY id ASC LIMIT ".(($pagina-1)*15).", 15");
 	$statement->execute();            
 	return($statement->fetchAll());   
 	}
@@ -32,7 +32,7 @@ function insereAnotacao($hinicio,$hfim, $idTipoAnotacao, $idMedidor)
 function excluiAnotacao($id)
 	{
 	$pdo = Banco::obterConexao();
-	$statement = $pdo->prepare("DELETE FROM Anotacao WHERE idAnotacao =".$id);
+	$statement = $pdo->prepare("DELETE FROM Anotacao WHERE id =".$id);
 	$statement->execute();            
 	}
 

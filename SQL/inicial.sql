@@ -1,4 +1,4 @@
--- Atualizado em 02/04/2020
+-- Atualizado em 23/04/2020
 
 CREATE DATABASE simcona;
 USE simcona;
@@ -25,13 +25,24 @@ nome VARCHAR(255)
 );
 
 CREATE TABLE Anotacao (
-idAnotacao BIGINT AUTO_INCREMENT PRIMARY KEY,
+id BIGINT AUTO_INCREMENT PRIMARY KEY,
 horaInicio DATETIME,
 horaFim DATETIME,
 tipoAnotacao INT,
 idMedidor INT(128),
 FOREIGN KEY(tipoAnotacao) REFERENCES TipoAnotacao (idTipo),
 FOREIGN KEY(idMedidor) REFERENCES Medidor (id)
+);
+
+CREATE TABLE ModeloAnotacao (
+id BIGINT AUTO_INCREMENT PRIMARY KEY,
+idAnotacao BIGINT,
+diaSemana CHAR(1),
+segHora INT(128),
+intpt DECIMAL(10,3 ), 
+coef DECIMAL(10,3 ),
+FOREIGN KEY(idAnotacao) REFERENCES Anotacao (id),
+
 );
 
 CREATE TABLE Usuario (
@@ -48,11 +59,12 @@ enderecoBroker VARCHAR(255)
 );
 
 CREATE TABLE Alerta (
-idAlerta BIGINT PRIMARY KEY,
+id BIGINT AUTO_INCREMENT PRIMARY KEY,
 textoDescricao VARCHAR(255),
 horario DATETIME,
 idAnotacao BIGINT,
-FOREIGN KEY(idAnotacao) REFERENCES Anotacao (idAnotacao)
+peso INT(128),
+FOREIGN KEY(idAnotacao) REFERENCES Anotacao (id)
 );
 
 INSERT INTO Medidor (nome,topico,descricao,fator) VALUES ("Medidor01", "medidor/esp32a", "Predio 01", 1.0);
