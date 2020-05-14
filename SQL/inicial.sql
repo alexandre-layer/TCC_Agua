@@ -1,4 +1,4 @@
--- Atualizado em 23/04/2020
+-- Atualizado em 13/05/2020
 
 CREATE DATABASE simcona;
 USE simcona;
@@ -15,7 +15,7 @@ CREATE TABLE Registro (
 id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 horario DATETIME(0),
 valor DECIMAL(10,3 ),
-idMedidor INT(128),
+idMedidor INT,
 FOREIGN KEY(idMedidor) REFERENCES Medidor (id)
 );
 
@@ -29,7 +29,8 @@ id BIGINT AUTO_INCREMENT PRIMARY KEY,
 horaInicio DATETIME,
 horaFim DATETIME,
 tipoAnotacao INT,
-idMedidor INT(128),
+idMedidor INT,
+modelado BOOLEAN DEFAULT FALSE,
 FOREIGN KEY(tipoAnotacao) REFERENCES TipoAnotacao (idTipo),
 FOREIGN KEY(idMedidor) REFERENCES Medidor (id)
 );
@@ -38,11 +39,10 @@ CREATE TABLE ModeloAnotacao (
 id BIGINT AUTO_INCREMENT PRIMARY KEY,
 idAnotacao BIGINT,
 diaSemana CHAR(1),
-segHora INT(128),
+segHora TINYINT,
 intpt DECIMAL(10,3 ), 
 coef DECIMAL(10,3 ),
-FOREIGN KEY(idAnotacao) REFERENCES Anotacao (id),
-
+FOREIGN KEY(idAnotacao) REFERENCES Anotacao (id)
 );
 
 CREATE TABLE Usuario (
@@ -63,7 +63,7 @@ id BIGINT AUTO_INCREMENT PRIMARY KEY,
 textoDescricao VARCHAR(255),
 horario DATETIME,
 idAnotacao BIGINT,
-peso INT(128),
+peso INT,
 FOREIGN KEY(idAnotacao) REFERENCES Anotacao (id)
 );
 
@@ -75,8 +75,15 @@ INSERT INTO Usuario (login, senha) VALUES ("user", "password");
 INSERT INTO Configuracao (id, usuarioBroker,senhaBroker, enderecoBroker) VALUES (0, "agua", "1368","127.0.0.1");
 INSERT INTO TipoAnotacao (idTipo, nome) VALUES (0, "Vazamento");
 INSERT INTO TipoAnotacao (idTipo, nome) VALUES (1, "Baixo Consumo");
- 
- 
+INSERT INTO Anotacao (horaInicio,horaFim,tipoAnotacao,idMedidor) VALUES (NOW(), NOW(), 1 , 1);
+INSERT INTO Anotacao (horaInicio,horaFim,tipoAnotacao,idMedidor) VALUES (NOW(), NOW(), 1 , 2);
+INSERT INTO Anotacao (horaInicio,horaFim,tipoAnotacao,idMedidor) VALUES (NOW(), NOW(), 1 , 3);
+INSERT INTO Anotacao (horaInicio,horaFim,tipoAnotacao,idMedidor) VALUES (NOW(), NOW(), 1 , 4);
+INSERT INTO Alerta (textoDescricao, horario, idanotacao, peso) VALUES ("Alto consumo", now(), 1, 100);
+INSERT INTO Alerta (textoDescricao, horario, idanotacao, peso) VALUES ("Alto consumo", now(), 2, 100);
+INSERT INTO Alerta (textoDescricao, horario, idanotacao, peso) VALUES ("Alto consumo", now(), 3, 100);
+INSERT INTO Alerta (textoDescricao, horario, idanotacao, peso) VALUES ("Alto consumo", now(), 4, 100);
+  
 CREATE USER 'aguasql'@'localhost' IDENTIFIED BY 'pass1368';
 GRANT SELECT,INSERT,DELETE,UPDATE on simcona.Medidor TO 'aguasql'@'localhost';
 GRANT INSERT,SELECT on simcona.Registro TO 'aguasql'@'localhost';

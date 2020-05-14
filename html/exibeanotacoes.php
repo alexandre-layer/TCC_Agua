@@ -59,9 +59,9 @@
 							<td class="horario"><?php echo $anotacao['horaInicio']; ?></td>
 							<td class="horario"><?php echo $anotacao['horaFim']; ?></td>
 							<td class="tipoanotacao"><?php echo $tiposdeanotacao[($anotacao['tipoAnotacao'])]['nome']; ?></td>
-							<td class="acao"><button type="submit" name="exibir" value="<?php echo $anotacao['idAnotacao']; ?>">Exibir</button>
+							<td class="acao"><button type="submit" name="exibir" value="<?php echo $anotacao['id']; ?>">Exibir</button>
 							<input type="hidden" name="pagina" value="<?php echo $paginaatual ?>">
-							<button type="submit" name="excluir" value="<?php echo $anotacao['idAnotacao']; ?>">Excluir</button>
+							<button type="submit" name="excluir" value="<?php echo $anotacao['id']; ?>">Excluir</button>
 							</td>
 						</form>
 					</tr>

@@ -3,7 +3,7 @@ require_once("banco.php");
 function buscaUltimoRegistro($idMedidor)
 	{
 	$pdo = Banco::obterConexao();
-	$statement = $pdo->prepare("SELECT horario,valor FROM Registro WHERE horario = (select max(horario) FROM Registro WHERE idMedidor=".$idMedidor.")");
+	$statement = $pdo->prepare("SELECT horario,valor FROM Registro WHERE horario = (select max(horario) FROM Registro WHERE idMedidor=".$idMedidor.") AND idMedidor = ".$idMedidor);
 	$statement->execute();
 	return($statement->fetchAll());
 	}
