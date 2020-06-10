@@ -1,4 +1,4 @@
--- Atualizado em 13/05/2020
+-- Atualizado em 09/06/2020
 
 CREATE DATABASE simcona;
 USE simcona;
@@ -89,6 +89,7 @@ GRANT SELECT,INSERT,DELETE,UPDATE on simcona.Medidor TO 'aguasql'@'localhost';
 GRANT INSERT,SELECT on simcona.Registro TO 'aguasql'@'localhost';
 GRANT UPDATE,SELECT on simcona.Configuracao TO 'aguasql'@'localhost';
 GRANT SELECT,INSERT,DELETE,UPDATE on simcona.Anotacao TO 'aguasql'@'localhost';
+GRANT SELECT,INSERT,DELETE,UPDATE on simcona.ModeloAnotacao TO 'aguasql'@'localhost';
 GRANT SELECT,INSERT,DELETE,UPDATE on simcona.TipoAnotacao TO 'aguasql'@'localhost';
 GRANT UPDATE,SELECT on simcona.Usuario TO 'aguasql'@'localhost';
 GRANT INSERT,SELECT, UPDATE on simcona.Alerta TO 'aguasql'@'localhost';
