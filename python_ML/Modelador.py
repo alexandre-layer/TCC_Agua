@@ -2,16 +2,16 @@
 """
 Created on Thu May 28 14:20:44 2020
 Modelador
-18/05/2020 = criação estrutural (núcleo)
-08/05/2020 = Funçoes   recuperaMedidores()
+18/06/2020 = criação estrutural (núcleo)
+08/06/2020 = Funçoes   recuperaMedidores()
                        recuperaAnotacoes(idmed) 
                        calculatotalsegmentos(anotcalc)
                        marcaModelada(idanot)  
-09/05/2020 = Funções   segmento_calc(segmento)
+09/06/2020 = Funções   segmento_calc(segmento)
                        segmentosSQL(anotseg)
                        processamodelo(paramproc)
                        armazenamodelo(paramod)
-                       
+11/06/2020 = Primeira limpeza no código (ainda há detalhes a melhorar)                       
 @author: Layer
 """
 
@@ -21,7 +21,7 @@ import datetime
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 
-banco = sql.connect(
+banco = sql.connect( # Parametros do banco
   host="localhost",
   database='simcona', 
   user='aguasql', 
@@ -35,7 +35,6 @@ def recuperaMedidores():
     cursql.execute("SELECT id, nome, topico FROM Medidor")
     resultadoMedidores = cursql.fetchall()
     return resultadoMedidores
-
 # Função pra recuperar anotações do banco
 def recuperaAnotacoes(idmed):
     cursql.execute("SELECT id, horaInicio, horaFim, tipoAnotacao, idMedidor FROM Anotacao WHERE modelado = false and idMedidor ="+str(idmed))
@@ -46,7 +45,7 @@ def marcaModelada(idanot):
     cursql.execute("UPDATE Anotacao SET modelado= true WHERE id = "+str(idanot))
     banco.commit()
     return
-#função que determina número de segmentos
+#função que determina número total de segmentos
 def calculatotalsegmentos(anotcalc):
     inicio = anotcalc[1]
     fim = anotcalc[2]
@@ -57,14 +56,14 @@ def calculatotalsegmentos(anotcalc):
     total_segmentos = ((diferenca_dias *24) + (diferenca.seconds //3600)) // 3
     if (diferenca.seconds %3600 >0): total_segmentos +=1
     return total_segmentos
-#Calculadora de segmentos
+#Função calculadora de segmentos (retorna hora inicial e final dado um segmento)
 def segmento_calc(segmento):
     horaini = str("%02d" % (segmento*3,))+":00:00"
     horafim = str("%02d" % (((segmento+1)*3)-1))+":59:59"
     respostahora = {'inicio': horaini,'fim' : horafim}
     return respostahora
 
-#Função que cria os segmentos para as queries SQL
+#Função que cria os parêmetros dos segmentos para as queries SQL
 def segmentosSQL(anotseg):
     # Inicialização de variaveis
     inicio = anotseg[1]
@@ -99,29 +98,23 @@ def segmentosSQL(anotseg):
     return retornoSQL
 
 def processamodelo(paramproc): #Retorna [idAnotacao, idmedidor, diasemana, segmnto,intpt,coef]
-##
-    
     inicio = paramproc[2]
     fim = paramproc[3]
-    print (str(paramproc[1]))
-    #select
+    #select e where SQL
     dbsel = "id, UNIX_TIMESTAMP(horario) AS horario, valor"
-    #where
     dbwhe = "idMedidor="+str(paramproc[1])+" AND horario BETWEEN '"+inicio+"' AND '"+fim+"' ORDER BY id ASC"
     #execução
-    print("Carregando via MySQL...")
+    #Carregando via MySQL
     df = pd.read_sql("SELECT "+dbsel+" FROM Registro WHERE "+dbwhe, con=banco)
-    # localiza o primeiro horario para fazer o delta (iniciar em zero)
+    #localiza o primeiro horario para fazer o delta (iniciar em zero), se não for nulo
     if df.empty:
-        print ("Dataframe Vazio! Abortando")
+        #print ("Dataframe Vazio! Abortando")
         return 
-    
-    print("Calculos Epoch (delta)...")
+    #Calculos Epoch (delta)
     primeirohorario = df.loc[0, 'horario']
     linhas = len(df.index)
     df['horario'] = df['horario'].sub(primeirohorario)
     primeirohorario = df.loc[0, 'horario']
-    
     #Rotina para fazer o acumulado
     df['acumulado'] = 0
     i=1
@@ -133,29 +126,31 @@ def processamodelo(paramproc): #Retorna [idAnotacao, idmedidor, diasemana, segmn
     x = x.reshape(-1,1)
     regressor = LinearRegression()
     regressor.fit(x,y)
-    
-    ##    
     return [paramproc[0],paramproc[1],paramproc[5],paramproc[4],regressor.intercept_ ,regressor.coef_[0]]    
     
 def armazenaModelo(paramod):
     valores = str(paramod[0])+","+str(paramod[2])+","+str(paramod[3])+","+str(paramod[4][0])+","+str(paramod[5][0])
     cursql.execute("INSERT INTO ModeloAnotacao (idAnotacao, diaSemana, segHora,intpt,coef) VALUES ("+valores+")") 
-    print("INSERT INTO ModeloAnotacao (idAnotacao, diaSemana, segHora,intpt,coef) VALUES ("+valores+")") 
-    
-    
+    #print("INSERT INTO ModeloAnotacao (idAnotacao, diaSemana, segHora,intpt,coef) VALUES ("+valores+")") 
     banco.commit()
     return
+
+# "MAIN"
+est_totalsegmentos = 0
+est_totalmedidores = 0
+est_totalanotacoes = 0  
 
 medidores = recuperaMedidores() # obtem medidores do banco
 naomodeladas = list() #instanciando a lista de não modeladas
 for medidor in medidores: # pega todos os medidores
-    # Recupera anotacoes nao modeladas do medidor
+    # Recupera anotacoes ainda não modeladas do medidor
     anotacoesrecuperadas = recuperaAnotacoes(medidor[0])
+    est_totalmedidores +=1
     # Percorre todas as anotações recuperadas e vai acrescentandoa lista
     for anotacao in anotacoesrecuperadas:
         naomodeladas.append(anotacao)
     
-#pega todas as anotações e transforma em modelo, 1 por 1
+#pega todas as anotações e transforma em modelo, uma por uma (sequencial)
 segmentos = []
 parametros = []
 for anotacao in naomodeladas:  
@@ -164,34 +159,14 @@ for anotacao in naomodeladas:
         for segmentoSQL in retornoSegmentosSQL: #enche lista com todos os dados para modelo
             segmentos.append(segmentoSQL)
     
-        for parametrosmodelo in segmentos: # itera lista para cada modelo e salva
-            #armazenamodelo(processamodelo(parametrosmodelo))
-            #print(str(parametrosmodelo))
+        for parametrosmodelo in segmentos: # itera lista de segmentos para cada modelo e salva
+            est_totalsegmentos +=1
             retornoProcessa = processamodelo(parametrosmodelo)
-            if retornoProcessa: 
+            if retornoProcessa: #se não for nulo / vazio
                 parametros.append(retornoProcessa)
                 armazenaModelo(retornoProcessa)
- 
     marcaModelada (anotacao[0])   #Marca essa anotacao como modelada
-    
-
-
-"""  
-#total de segmentos
-totalsegmentos = calculatotalsegmentos(anotacao)
-
-while(totalsegmentos>=0): #corre todos os segmentos
-    #recebe parametros de um segmento
-    parametros = retornaparametros(medidor,dataini, datafim)
-    #Armazena modelo
-    armazenaModelo(anotacao['id'],parametros['diasem'],parametros['coef'], parametros['intercept'])
-"""
-
-
-
-"""
-Total de funçoes a implementar
-retornaParametros()
-armazenaModelo()
-"""
-    
+    est_totalanotacoes +=1
+print ("Estatisticas gerais")    
+print ("Foram processados um total de "+str(est_totalsegmentos)+" segmentos")
+print ("Total de medidores: "+str(est_totalmedidores)+", total de anotacoes: "+str(est_totalanotacoes))
