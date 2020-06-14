@@ -116,6 +116,10 @@ div.medidor {
 	margin:20px 20px;
 	border: 1px solid #00AAFF;
 }
+select.listAlertas {
+	overflow-x:auto;
+	overflow-y:auto;
+}
 table.anotacoes {
 	border: 1px solid black;
 }

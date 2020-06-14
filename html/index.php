@@ -13,21 +13,12 @@
 <body>
 <?php
 	require_once('supnavbar.html');
-	require_once('cntrl/alerta.php');
 ?>
 <center>
 	<div class="corpo">
 		<div class="alertas">
 			Alertas
-			<select name="alertas" size="20" multiple>
-			
-			<?php
-			$alertas = retornaAlertas(15);
-			foreach ($alertas as &$alerta)
-			{
-				echo "<option value='".$alerta['idAlerta']."'>".$alerta['horario']." - ".$alerta['textoDescricao']."</option>";
-			}
-			?>
+			<select class="listalertas" id="listAlertas" name="alertas" size="20" multiple style="max-width:300px;">
 			</select>
 		</div>
 		<center>

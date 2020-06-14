@@ -14,7 +14,6 @@ Modelador
 11/06/2020 = Primeira limpeza no código (ainda há detalhes a melhorar)                       
 @author: Layer
 """
-
 import mysql.connector as sql
 from datetime import timedelta
 import datetime
@@ -45,14 +44,12 @@ def marcaModelada(idanot):
     cursql.execute("UPDATE Anotacao SET modelado= true WHERE id = "+str(idanot))
     banco.commit()
     return
-#função que determina número total de segmentos
+#Função que determina número total de segmentos
 def calculatotalsegmentos(anotcalc):
     inicio = anotcalc[1]
     fim = anotcalc[2]
-    #timedelta só retorna segundos e dias.
     diferenca = fim - inicio
     diferenca_dias = diferenca.days
-    #calculo total de segmentos no periodo
     total_segmentos = ((diferenca_dias *24) + (diferenca.seconds //3600)) // 3
     if (diferenca.seconds %3600 >0): total_segmentos +=1
     return total_segmentos
@@ -104,11 +101,9 @@ def processamodelo(paramproc): #Retorna [idAnotacao, idmedidor, diasemana, segmn
     dbsel = "id, UNIX_TIMESTAMP(horario) AS horario, valor"
     dbwhe = "idMedidor="+str(paramproc[1])+" AND horario BETWEEN '"+inicio+"' AND '"+fim+"' ORDER BY id ASC"
     #execução
-    #Carregando via MySQL
     df = pd.read_sql("SELECT "+dbsel+" FROM Registro WHERE "+dbwhe, con=banco)
     #localiza o primeiro horario para fazer o delta (iniciar em zero), se não for nulo
     if df.empty:
-        #print ("Dataframe Vazio! Abortando")
         return 
     #Calculos Epoch (delta)
     primeirohorario = df.loc[0, 'horario']
@@ -131,7 +126,6 @@ def processamodelo(paramproc): #Retorna [idAnotacao, idmedidor, diasemana, segmn
 def armazenaModelo(paramod):
     valores = str(paramod[0])+","+str(paramod[2])+","+str(paramod[3])+","+str(paramod[4][0])+","+str(paramod[5][0])
     cursql.execute("INSERT INTO ModeloAnotacao (idAnotacao, diaSemana, segHora,intpt,coef) VALUES ("+valores+")") 
-    #print("INSERT INTO ModeloAnotacao (idAnotacao, diaSemana, segHora,intpt,coef) VALUES ("+valores+")") 
     banco.commit()
     return
 

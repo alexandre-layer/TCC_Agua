@@ -7,10 +7,10 @@ Avaliador
                         recuperaRegistros(minutosAtras, medidor)           
                         avaliaRegistros(df, intpt, coef)
                         recuperaModeloAnotacoes(idmed, segmento, diaSemana)
-   
+13/06/2020 = Função     armazenaAlerta(dspaval)
+             Funcional (Armazenando Alertas)
 @author: Layer
 """
-
 #imports
 import mysql.connector as sql
 from datetime import timedelta
@@ -81,13 +81,20 @@ def avaliaRegistros(df, intpt, coef): # Dataframe, coef, intercept
 def recuperaModeloAnotacoes(idmed, segmento, diaSemana):
     if diaSemana < 5: diaSemSTR = "< 5"
     else: diaSemSTR = "> 4"
-    dbsel = "SELECT ModeloAnotacao.id, ModeloAnotacao.intpt, ModeloAnotacao.coef FROM ModeloAnotacao "
+    dbsel = "SELECT ModeloAnotacao.id, ModeloAnotacao.intpt, ModeloAnotacao.coef, Anotacao.id FROM ModeloAnotacao "
     dbon = "INNER JOIN Anotacao ON Anotacao.id=ModeloAnotacao.idAnotacao "
     dbwhe = "WHERE Anotacao.idMedidor = "+str(idmed)+" AND ModeloAnotacao.diaSemana "+diaSemSTR+" AND ModeloAnotacao.segHora = 1"#
     cursql.execute(dbsel + dbon + dbwhe)
     resultadomodelos = cursql.fetchall()
     return resultadomodelos # idModeloanotacao, intpt, coef
-    
+def  armazenaAlerta(dspaval):
+    peso = 0
+    if dspaval[3] > 50.00: peso +=50
+    if dspaval[2] > 1: peso +=50
+    valores = "'Cons. Anormal','"+str(datetime.now())+"',"+str(dspaval[4])+","+str(dspaval[0])+","+str(peso)
+    cursql.execute("INSERT INTO Alerta (textoDescricao, horario, idAnotacao, idMedidor, peso) VALUES ("+valores+")") 
+    banco.commit()
+
 #"MAIN"
 medidores = recuperaMedidores()
 segmentoAtual = (datetime.now().hour //3)
@@ -95,6 +102,9 @@ desempenhos = []
 modelos = []
 dfmedidores = []
 mdmedidores = []
+est_totalmodelos = 0
+est_totalalertas = 0
+
 for medidor in medidores: #iteração de medidores
     dataframedomedidor = recuperaRegistros(120, medidor[0])
     dfmedidores.append(dataframedomedidor)
@@ -102,7 +112,15 @@ for medidor in medidores: #iteração de medidores
     mdmedidores.append(modelosAnotacoes)
     if not(dataframedomedidor.empty): 
         for modelo in modelosAnotacoes:
+            est_totalmodelos +=1
             retornoAvalia = avaliaRegistros(dataframedomedidor, float(modelo[1]) , float(modelo[2]))
-            resultadodesempenho = [medidor[0],modelo[0],retornoAvalia[0], retornoAvalia[1]]
+            resultadodesempenho = [medidor[0],modelo[0],retornoAvalia[0], retornoAvalia[1],modelo[3]]
             desempenhos.append(resultadodesempenho)
+for desempenhoavaliado in desempenhos:
+    if desempenhoavaliado[2] > 1 or desempenhoavaliado[3] > 50.00:
+        armazenaAlerta(desempenhoavaliado)
+        est_totalalertas +=1
+print ("Estatisticas gerais")    
+print ("Foram processados um total de "+str(est_totalmodelos)+" modelos")
+print ("Foram armazenados um total de : "+str(est_totalalertas)+ " alertas")
 

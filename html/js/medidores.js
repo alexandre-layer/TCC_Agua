@@ -11,7 +11,30 @@ function retornaUltimaLeitura(medidor, ponteiro) {
 		})
 	return resposta.valor;
 }
-
+function acrescentaLista(alertasJSON)
+{
+	if (alertasJSON.id != null)
+		{
+		for (i = 0; i < ((alertasJSON.id).length); i++) 
+			{ 
+			textoAlerta =  alertasJSON.horario[i]+" = Medidor: "+alertasJSON.idMedidor[i]+" = "+alertasJSON.textoDescricao[i];
+			$("#listAlertas").append("<option value=1>"+textoAlerta+"</option>");
+			ultimoAlerta = alertasJSON.id[i]
+			}
+		}
+}
+function atualizaAlertas() {
+	$.post("cntrl/alerta.php",
+		{
+		parametro1:ultimoAlerta,
+		funcao:"retornaAlertas",
+		})
+	.done(function(data,status)
+		{
+		respAlertas = JSON.parse(data)
+		acrescentaLista(respAlertas);
+		})
+}
 $(document).ready(function(){
 $.post("cntrl/medidor.php",
     {
@@ -21,6 +44,8 @@ $.post("cntrl/medidor.php",
       resposta = JSON.parse(data)
 	  medidoresId = resposta.id;
 	});
+	ultimoAlerta=-1;
+	atualizaAlertas();	
 });
 	
 var gauges  = []
@@ -76,7 +101,6 @@ var gauges  = []
 					{ 
 					retornaUltimaLeitura(medidoresId[i], i);
 					}
-					
-			}, 3000);
+					atualizaAlertas();
+				}, 3000);
 		})
-		

@@ -1,4 +1,4 @@
--- Atualizado em 09/06/2020
+-- Atualizado em 13/06/2020
 
 CREATE DATABASE simcona;
 USE simcona;
@@ -63,8 +63,10 @@ id BIGINT AUTO_INCREMENT PRIMARY KEY,
 textoDescricao VARCHAR(255),
 horario DATETIME,
 idAnotacao BIGINT,
+idMedidor INT,
 peso INT,
-FOREIGN KEY(idAnotacao) REFERENCES Anotacao (id)
+FOREIGN KEY(idAnotacao) REFERENCES Anotacao (id),
+FOREIGN KEY(idMedidor) REFERENCES Medidor (id)
 );
 
 INSERT INTO Medidor (nome,topico,descricao,fator) VALUES ("Medidor01", "medidor/esp32a", "Predio 01", 1.0);
