@@ -83,8 +83,9 @@ def recuperaModeloAnotacoes(idmed, segmento, diaSemana):
     else: diaSemSTR = "> 4"
     dbsel = "SELECT ModeloAnotacao.id, ModeloAnotacao.intpt, ModeloAnotacao.coef, Anotacao.id FROM ModeloAnotacao "
     dbon = "INNER JOIN Anotacao ON Anotacao.id=ModeloAnotacao.idAnotacao "
-    dbwhe = "WHERE Anotacao.idMedidor = "+str(idmed)+" AND ModeloAnotacao.diaSemana "+diaSemSTR+" AND ModeloAnotacao.segHora = 1"#
+    dbwhe = "WHERE Anotacao.idMedidor = "+str(idmed)+" AND ModeloAnotacao.diaSemana "+diaSemSTR+" AND ModeloAnotacao.segHora = "+str(segmento)#
     cursql.execute(dbsel + dbon + dbwhe)
+    print(dbsel + dbon + dbwhe)
     resultadomodelos = cursql.fetchall()
     return resultadomodelos # idModeloanotacao, intpt, coef
 def  armazenaAlerta(dspaval):
@@ -106,7 +107,7 @@ est_totalmodelos = 0
 est_totalalertas = 0
 
 for medidor in medidores: #iteração de medidores
-    dataframedomedidor = recuperaRegistros(120, medidor[0])
+    dataframedomedidor = recuperaRegistros(15, medidor[0])
     dfmedidores.append(dataframedomedidor)
     modelosAnotacoes = recuperaModeloAnotacoes(medidor[0], segmentoAtual,datetime.now().weekday())
     mdmedidores.append(modelosAnotacoes)

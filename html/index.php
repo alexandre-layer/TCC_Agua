@@ -18,7 +18,7 @@
 	<div class="corpo">
 		<div class="alertas">
 			Alertas
-			<select class="listalertas" id="listAlertas" name="alertas" size="20" multiple style="max-width:300px;">
+			<select class="listAlertas" id="listAlertas" name="alertas" size="20" multiple style="max-width:300px;">
 			</select>
 		</div>
 		<center>

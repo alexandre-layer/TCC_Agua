@@ -11,16 +11,19 @@
 #
 # - 24/02/2020 - Mudança no nome do topico mqtt e na senha do bd#
 # - 29/02/2020 - mudança na forma de inserir (mudança na estrutura do banco (PK Medidor))
-#
+# - 14/06/2020 - mudança no import do banco para compatibilizar com o python 3
 #
 
-import MySQLdb as mdb		# importa Mysql
+import mysql.connector as mdb	# importa Mysql
 import paho.mqtt.client as mqtt # importa biblioteca Paho (Paho é uma biblioteca de MQTT para Python)
 servdb = "localhost"
 topico = "medidor/#"
 
 #chamada para conectar ao banco
-con = mdb.connect(servdb, 'aguasql', 'pass1368', 'simcona')
+con = mdb.connect(host="localhost",
+  database='simcona', 
+  user='aguasql', 
+  password='pass1368')
 cur = con.cursor()
 
 #Obter configurações do broker a partir do banco
