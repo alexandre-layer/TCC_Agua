@@ -11,19 +11,20 @@
 #
 # - 24/02/2020 - Mudança no nome do topico mqtt e na senha do bd#
 # - 29/02/2020 - mudança na forma de inserir (mudança na estrutura do banco (PK Medidor))
-# - 14/06/2020 - mudança no import do banco para compatibilizar com o python 3
+# - 14/06/2020 - Mudança do import do SQL (Compatibilidade Python3)
 #
-
-import mysql.connector as mdb	# importa Mysql
+import mysql.connector as mdb		# importa Mysql
 import paho.mqtt.client as mqtt # importa biblioteca Paho (Paho é uma biblioteca de MQTT para Python)
 servdb = "localhost"
 topico = "medidor/#"
 
 #chamada para conectar ao banco
-con = mdb.connect(host="localhost",
+con = mdb.connect(# Parametros do banco
+  host=servdb,
   database='simcona', 
   user='aguasql', 
-  password='pass1368')
+  password='pass1368'
+)
 cur = con.cursor()
 
 #Obter configurações do broker a partir do banco
@@ -43,7 +44,8 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     print(msg.topic+" = > "+str(msg.payload))           # Imprime na tela (console a mensagem)
     valor = str(msg.payload)			    # Recebe o tópico e a mensagem, concatenando em 'conteudo' 
-    cur.execute("INSERT INTO Registro(horario, valor, idMedidor) SELECT NOW(),"+valor.split("=")[1]+", id FROM Medidor WHERE topico = '"+msg.topic+"'") # prepara insert
+    stmt = "INSERT INTO Registro(horario, valor, idMedidor) SELECT NOW(),'"+str(valor.split("=")[1])+", id FROM Medidor WHERE topico = '"+msg.topic+"'"
+    cur.execute(stmt) # prepara insert
     con.commit() #commit da operação do insert
 
 client = mqtt.Client(client_id="PythonCliAgua", clean_session=False) # Instancia o cliente MQTT
